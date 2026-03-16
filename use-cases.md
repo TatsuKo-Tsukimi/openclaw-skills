@@ -1,77 +1,76 @@
 # Use Cases
 
-Three concrete scenarios where agent-charter skills prevent real failures.
+Three failure patterns that agent-charter intercepts.
 
 ---
 
 ## Case 1: Ops / Project lane confusion
 
-**Situation**  
-You ask your agent: *"Clean up the project docs and make sure the structure is consistent."*
+**Problem**  
+An agent asked to "clean up project docs" starts reading runtime config files it was never meant to touch.
 
-**What goes wrong without lane-router**  
-The agent decides "consistent structure" might include agent configuration files. It reads `~/.openclaw/openclaw.json`, checks the gateway config for doc-related settings, and starts suggesting changes to skill loading order. None of this was asked for.
+**What goes wrong**  
+The agent decides "consistent structure" might include agent configuration. It reads `~/.openclaw/openclaw.json`, consults gateway settings, and begins suggesting changes to skill loading order. The actual task — organizing workspace docs — is delayed or abandoned.
 
-**What lane-router does**  
-At task start, lane-router evaluates: does this require runtime config or external paths? No — it's a workspace doc task. Routes to Project Lane. Runtime config is never consulted.
+**Which skill intercepts it**  
+`lane-router` fires at task start. It evaluates whether the task requires runtime config or external paths. It does not. The task routes to Project Lane and the agent never accesses runtime config.
+
+**What outcome changes**  
+The docs are organized. Runtime config is never read. The routing decision is logged in one line before any work begins:
 
 ```
 Lane: Project | reason: task involves workspace docs only
 ```
 
-The agent stays scoped. The docs get cleaned up. Nothing else moves.
-
-**Skill:** [`lane-router`](lane-router/)
-
 ---
 
 ## Case 2: Harness change spirals out of control
 
-**Situation**  
-You ask: *"Add a small helper script that checks whether my active tasks are up to date."*
+**Problem**  
+A request for "one small helper script" turns into a gateway config change and a session-breaking restart.
 
-**What goes wrong without safe-harness-change**  
-The agent adds the script. Then notices the task-checking logic could be improved if the lane rules were updated. Updates the lane rules. Then sees that the gateway heartbeat config could be tightened. Edits the gateway config. Then triggers a restart to apply it. Your current session is gone.
+**What goes wrong**  
+The agent adds the requested script, then notices the lane rules could be improved to make the script more useful, then sees the gateway heartbeat config could be tightened, then triggers a restart to apply everything. The current session is lost.
 
-**What safe-harness-change does**  
-Enforces a single-tranche boundary before writing anything. The requested change (helper script) is allowed. Lane rule changes, gateway config edits, and restarts are all out of scope for this tranche. The script ships. Everything else is explicitly left untouched.
+**Which skill intercepts it**  
+`safe-harness-change` enforces a single-tranche boundary before any file is written. The helper script is in scope. Lane rule changes, gateway config edits, and restarts are all explicitly out of scope for this tranche.
+
+**What outcome changes**  
+The script ships. Everything else is left untouched. The tranche summary makes the boundary explicit:
 
 ```
-Tranche: helper script — scripts/check-tasks.sh
+Tranche: helper script
 Files changed: scripts/check-tasks.sh
 How to use: bash scripts/check-tasks.sh
 Not changed: lane rules, gateway config, session state
 ```
 
-**Skill:** [`safe-harness-change`](safe-harness-change/)
-
 ---
 
-## Case 3: workspaceOnly pre-flight
+## Case 3: workspaceOnly enabled without pre-flight
 
-**Situation**  
-You want to tighten your agent's filesystem access by enabling `tools.fs.workspaceOnly=true`. You're not sure what will break.
+**Problem**  
+`tools.fs.workspaceOnly=true` is enabled without knowing which workflows depend on external paths. Two workflows break immediately.
 
-**What goes wrong without workspaceonly-preflight**  
-You enable it. Two workflows immediately fail: the agent can no longer read the OpenClaw runtime config it uses for a weekly health check, and a harness script that lives outside the workspace stops running. You spend an hour debugging.
+**What goes wrong**  
+A weekly runtime health check reads `~/.openclaw/openclaw.json`. A harness script lives outside the workspace. Both stop working. Debugging takes an hour.
 
-**What workspaceonly-preflight does**  
-Runs a read-only path survey first. No config changes, no restarts. Classifies your actual path usage:
+**Which skill intercepts it**  
+`workspaceonly-preflight` runs a read-only path survey before any config change. It classifies actual path usage across recent workflows and returns a recommendation.
+
+**What outcome changes**  
+The two blockers are identified before `workspaceOnly` is enabled. The config change is deferred until the external dependencies are resolved:
 
 ```
 Path snapshot:
-  Inside workspace (high-freq): project files, docs, memory
-  Outside workspace (high-freq): ~/.openclaw/ (runtime health check)
+  Inside workspace (high-freq):   project files, docs, memory
+  Outside workspace (high-freq):  ~/.openclaw/ (runtime health check)
   Outside workspace (occasional): ~/scripts/harness-check.sh
 
-First-break tasks if workspaceOnly enabled:
-  1. Weekly runtime health check (reads ~/.openclaw/openclaw.json)
-  2. Harness check script (lives outside workspace)
+First-break tasks:
+  1. Weekly runtime health check
+  2. Harness check script
 
 Recommendation: Not ready
-Suggested timing: after relocating harness-check.sh into workspace
+Next step: relocate harness-check.sh into workspace, then re-run preflight
 ```
-
-You fix the two blockers first. Then enable `workspaceOnly` without surprises.
-
-**Skill:** [`workspaceonly-preflight`](workspaceonly-preflight/)

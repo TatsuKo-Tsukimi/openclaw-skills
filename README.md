@@ -5,6 +5,8 @@
 [![OpenClaw](https://img.shields.io/badge/OpenClaw-compatible-blue)](https://openclaw.ai)
 [![Release](https://img.shields.io/github/v/release/TatsuKo-Tsukimi/agent-charter)](https://github.com/TatsuKo-Tsukimi/agent-charter/releases)
 
+**Agent Charter is not a tool bundle. It is a decision layer for OpenClaw agents.**
+
 ---
 
 ### What is agent-charter?
@@ -57,7 +59,8 @@ You want to tighten filesystem access by enabling `workspaceOnly=true`. `workspa
 | [`safe-harness-change`](safe-harness-change/) | Any harness edit | Scope creep, breakage |
 | [`workspaceonly-preflight`](workspaceonly-preflight/) | Before config tightening | Surprise workflow breaks |
 
-→ See [OVERVIEW.md](OVERVIEW.md) for how the five skills connect as a decision chain.
+→ See [OVERVIEW.md](OVERVIEW.md) for how the five skills connect as a decision chain.  
+→ See [FAQ.md](FAQ.md) for: why not a system prompt, why skills over policy files, safety vs productivity.
 
 ---
 
