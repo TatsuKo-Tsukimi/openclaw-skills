@@ -1,31 +1,66 @@
 # openclaw-skills
 
-**A collection of OpenClaw agent skills for workflow governance, safety, and efficiency.**
+**OpenClaw agent skills for workflow governance, safety, and efficiency.**
 
-These skills solve real problems I encountered running a local AI assistant long-term. They're framework-level patterns — not platform integrations — so they should work for most OpenClaw setups.
+These skills are framework-level patterns — not platform integrations. They define *how your agent thinks and operates*, not what it connects to. Each one solves a real problem that shows up when running a local AI assistant long-term.
 
 ---
 
-## Skills in this repo
+## Skills
 
 ### [`lane-router`](lane-router/)
 
 > Route tasks into the correct working lane before taking action.
 
-Prevents a common failure mode: agents treating ordinary project work as system operations (or vice versa). Defines a **Project Lane** (workspace-local, safe, default) and an **Ops Lane** (runtime config, external paths, system work).
+Defines a **Project Lane** (workspace-local, safe, default) and an **Ops Lane** (runtime config, external paths, system ops). Prevents agents from wandering into system config for ordinary project work — or being overly cautious about it.
 
-**Use it when:**
-- You want your agent to stay in a bounded workspace by default
-- You need a lightweight decision point before starting new tasks
-- You're tired of your agent touching config files for no reason
+**Best for:** Anyone running a long-term local agent who wants bounded, predictable behavior.
+
+---
+
+### [`pm-safe-core`](pm-safe-core/)
+
+> Safety-first execution framework for complex tasks.
+
+Implements a **STOP → SEARCH → RECORD → PLAN → ACT** loop with approval gates for dangerous actions, session isolation rules, context flush patterns, and recoverable execution. Designed for tasks that can't easily be undone.
+
+**Best for:** Multi-step tasks, refactors, deploys, anything involving external sends or file deletions.
+
+---
+
+### [`token-efficiency`](token-efficiency/)
+
+> Minimize token usage without sacrificing quality.
+
+A response/context/tool/model policy playbook that keeps agents concise by default and deep only on demand. Includes output shape templates for quick answers, plans, and status updates.
+
+**Best for:** Reducing API costs and context bloat on long-running assistant setups.
+
+---
+
+### [`safe-harness-change`](safe-harness-change/)
+
+> Incremental harness improvements without breaking your current setup.
+
+Enforces a strict non-disruptive tranche boundary: probe scripts, helper scripts, lane rules, and task templates — but no gateway changes, no auth changes, no restarts. Stops the "one small change breaks everything" failure mode.
+
+**Best for:** Agents with a working harness you want to improve incrementally.
+
+---
+
+### [`workspaceonly-preflight`](workspaceonly-preflight/)
+
+> Pre-flight check before tightening filesystem boundaries.
+
+Read-only analysis that classifies your path dependencies (inside vs outside workspace), identifies first-break tasks, and gives a go/no-go recommendation before you enable `workspaceOnly=true`.
+
+**Best for:** Anyone considering tighter filesystem sandboxing who wants to avoid surprises.
 
 ---
 
 ## Why these exist
 
-Most OpenClaw skills are integrations (Spotify, Notion, etc.). These are different — they're about **how your agent thinks and operates**, not what it connects to.
-
-Think of them as constitutional rules for your agent's behavior.
+Most OpenClaw skills are integrations (Spotify, Notion, email, etc.). These are different — they're about the **constitutional layer** of your agent: how it decides what to work on, how it handles risk, how it manages context, and how it evolves its own harness safely.
 
 ---
 
@@ -37,17 +72,14 @@ Copy any skill directory into your OpenClaw workspace skills folder:
 cp -r lane-router ~/.openclaw/workspace/skills/
 ```
 
-OpenClaw will auto-detect and load it on next restart.
+OpenClaw auto-detects and loads it on next restart. No configuration required.
 
 ---
 
-## More skills coming
+## More planned
 
-Planned additions:
-- `pm-safe-core` — safe execution protocol for complex multi-step tasks
-- `token-efficiency` — minimize token burn without sacrificing quality
-- `safe-harness-change` — incremental harness engineering without breaking things
-- `workspaceonly-preflight` — pre-flight check before tightening filesystem boundaries
+- `memory-hygiene` — structured daily/weekly memory maintenance workflow
+- `agent-journal` — lightweight task logging and retrospective pattern
 
 ---
 
