@@ -1,5 +1,7 @@
 ---
 name: workspaceonly-preflight
+version: 1.0.0
+author: TatsuKo-Tsukimi
 description: Assess whether it is safe to enable `tools.fs.workspaceOnly=true` on your OpenClaw agent without breaking current workflows. Use before tightening filesystem boundaries — generates a path dependency snapshot, classifies inside vs outside workspace usage, identifies which tasks would break first, and recommends whether a trial is worth scheduling now. Does NOT enable workspaceOnly; read-only analysis only.
 ---
 

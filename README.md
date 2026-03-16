@@ -1,5 +1,9 @@
 # openclaw-skills
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Skills](https://img.shields.io/badge/skills-5-orange)](https://github.com/TatsuKo-Tsukimi/openclaw-skills)
+[![OpenClaw](https://img.shields.io/badge/OpenClaw-compatible-blue)](https://openclaw.ai)
+
 **OpenClaw agent skills for workflow governance, safety, and efficiency.**
 
 These skills are framework-level patterns — not platform integrations. They define *how your agent thinks and operates*, not what it connects to. Each one solves a real problem that shows up when running a local AI assistant long-term.

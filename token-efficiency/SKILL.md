@@ -1,5 +1,7 @@
 ---
 name: token-efficiency
+version: 1.0.0
+author: TatsuKo-Tsukimi
 description: Minimize token usage while preserving task completion quality. Use when answering routine chat questions, running multi-step tasks, selecting tools/models, or planning context to keep responses concise by default and expand only on demand. Also use when you notice context getting bloated, tools returning raw walls of text, or the agent re-reading the same files repeatedly.
 ---
 

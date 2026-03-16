@@ -1,5 +1,7 @@
 ---
 name: pm-safe-core
+version: 1.0.0
+author: TatsuKo-Tsukimi
 description: Safety-first execution framework for complex tasks. Use for multi-step tasks, tasks likely to run longer than 5 minutes, tasks involving multiple file changes, or any request with risk of irreversible side effects. Provides a STOP→SEARCH→RECORD→PLAN→ACT workflow, session isolation rules, approval gates, audit logging, and recoverable execution. Triggers on: "do this complex task", "refactor", "deploy", "migrate", "delete", "send", "publish", or any request that feels risky to do without a plan.
 ---
 

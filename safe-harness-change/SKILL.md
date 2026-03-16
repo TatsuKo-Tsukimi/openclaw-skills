@@ -1,5 +1,7 @@
 ---
 name: safe-harness-change
+version: 1.0.0
+author: TatsuKo-Tsukimi
 description: Make low-risk, incremental improvements to your OpenClaw agent harness without disrupting the current working setup. Use when adding opt-in probes, local helper scripts, lane rules, task-entry scaffolds, or other lightweight harness improvements. This skill enforces a strict non-disruptive tranche boundary — it will not touch gateway defaults, auth, sandbox settings, workspaceOnly, or trigger a restart.
 ---
 

@@ -1,5 +1,7 @@
 ---
 name: lane-router
+version: 1.0.0
+author: TatsuKo-Tsukimi
 description: Route each new task into the correct working lane before taking action. Use when a new task arrives and you need to decide whether it belongs in the default Project Lane (workspace-first, read-only-first, project-task mode) or the Ops Lane (agent runtime/config, workspace-external paths, system operations, gateway/auth/security/sandbox/service/runtime work). Triggers on any new request that touches system config, external paths, or runtime concerns.
 ---
 
